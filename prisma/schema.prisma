@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model Category {
+  id            Int          @id @default(autoincrement())
+  name          String
+  slug          String
+  icon          String?
+  details       String?
+  type          String
+  createdAt     DateTime     @default(now())
+  parentId      Int?
+  parent        Category?  @relation("SubCategory", fields: [parentId], references: [id])
+  subCategory   Category[] @relation("SubCategory")
+  Products      Product[]
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  slug        String
+  price       Float
+  description String
+  image       String
+  createdAt   DateTime   @default(now())
+  category    Category[]
+  uploaderId  Int
+  uploader    User       @relation(fields: [uploaderId], references: [id])
+}
+
+model Address {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  city      String
+  state     String
+  country   String
+  zip       String
+  phone     String
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  password  String
+  role      String
+  phone     String
+  createdAt DateTime @default(now())
+  Address   Address[]
+  cart      Cart?
+  uploadedProducts Product[]
+  }
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  createdAt DateTime @default(now())
+  userId    Int @unique
+  productId Int
+  user      User     @relation(fields: [userId], references: [id])
+  cartItem  CartItem[]
+}
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  createdAt DateTime @default(now())
+  cartId    Int @unique
+  productId Int
+  cart      Cart?  @relation(fields: [cartId], references: [id])
+}
