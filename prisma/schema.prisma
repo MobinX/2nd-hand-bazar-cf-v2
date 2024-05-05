@@ -66,6 +66,7 @@ model User {
   Address   Address[]
   cart      Cart?
   uploadedProducts Product[]
+  education Education?
   }
 
 model Cart {
@@ -84,4 +85,15 @@ model CartItem {
   cartId    Int @unique
   productId Int
   cart      Cart?  @relation(fields: [cartId], references: [id])
+}
+
+model Education {
+  id        Int      @id @default(autoincrement())
+  institute    String
+  degree    String
+  field     String
+  startYear Int
+  endYear   Int
+  userId    Int @unique
+  user      User     @relation(fields: [userId], references: [id])
 }
