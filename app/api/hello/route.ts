@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getPrisma } from "@/configs/prisma"
 export const runtime = 'edge'
 

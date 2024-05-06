@@ -14,9 +14,8 @@ const capitalize = (str) => {
 //next js api file 
 const nextApi = arg => `
 import type { NextRequest } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getPrisma } from "@/configs/prisma"
-import { ${capitalize(arg)} } from '@prisma/client'
+
 export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
@@ -85,7 +84,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     const prisma = getPrisma()
-    const body: Partial<${capitalize(arg)}> = await request.json()
+    const body: any = await request.json()
     const id = body.id
     const data = await prisma.${arg}.update({
         where: {
@@ -111,7 +110,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     const prisma = getPrisma()
-    const body: Partial<${capitalize(arg)}> = await request.json()
+    const body: any = await request.json()
     const id = body.id
     const data = await prisma.${arg}.delete({
         where: {
@@ -136,8 +135,8 @@ export async function DELETE(request: NextRequest) {
 `
 
 const fetchApi = arg => `
- import { ${capitalize(arg)} } from '@prisma/client'
- export const fetch${arg} = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
+
+ export const get${capitalize(arg)} = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
     if(id){
         const res = await fetch(\`/api/${arg}?id=\${id}\`)
         return res.json()
@@ -148,7 +147,7 @@ const fetchApi = arg => `
     }
  }
 
- export const create${arg} = async (data:Partial<${capitalize(arg)}>) => {
+ export const create${capitalize(arg)} = async (data:any) => {
     const res = await fetch(\`/api/${arg}\`, {
         method: 'POST',
         body: JSON.stringify(data)
@@ -156,7 +155,7 @@ const fetchApi = arg => `
     return res.json()
  }
 
- export const update${arg} = async (data:Partial<${capitalize(arg)}>) => {
+ export const update${capitalize(arg)} = async (data:any) => {
     const res = await fetch(\`/api/${arg}\`, {
         method: 'PUT',
         body: JSON.stringify(data)
@@ -164,7 +163,7 @@ const fetchApi = arg => `
     return res.json()
  }
 
-export const delete${arg} = async (id:number) => {
+export const delete${capitalize(arg)} = async (id:number) => {
     const res = await fetch(\`/api/${arg}\`, {
         method: 'DELETE',
         body: JSON.stringify({id})

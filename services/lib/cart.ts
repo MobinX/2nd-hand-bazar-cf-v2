@@ -1,6 +1,6 @@
 
- import { Cart } from '@prisma/client'
- export const fetchcart = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
+
+ export const getCart = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
     if(id){
         const res = await fetch(`/api/cart?id=${id}`)
         return res.json()
@@ -11,7 +11,7 @@
     }
  }
 
- export const createcart = async (data:Partial<Cart>) => {
+ export const createCart = async (data:any) => {
     const res = await fetch(`/api/cart`, {
         method: 'POST',
         body: JSON.stringify(data)
@@ -19,7 +19,7 @@
     return res.json()
  }
 
- export const updatecart = async (data:Partial<Cart>) => {
+ export const updateCart = async (data:any) => {
     const res = await fetch(`/api/cart`, {
         method: 'PUT',
         body: JSON.stringify(data)
@@ -27,7 +27,7 @@
     return res.json()
  }
 
-export const deletecart = async (id:number) => {
+export const deleteCart = async (id:number) => {
     const res = await fetch(`/api/cart`, {
         method: 'DELETE',
         body: JSON.stringify({id})

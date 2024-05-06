@@ -7,40 +7,27 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev",
-    "deploy": "npm run pages:build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@libsql/client": "^0.6.0",
-    "@neondatabase/serverless": "^0.9.1",
-    "@prisma/adapter-d1": "^5.13.0",
     "@prisma/adapter-libsql": "^5.13.0",
-    "@prisma/adapter-neon": "^5.13.0",
     "@prisma/client": "^5.13.0",
-    "@reduxjs/toolkit": "^2.2.3",
     "next": "14.1.0",
     "prisma": "^5.13.0",
     "react": "^18",
-    "react-dom": "^18",
-    "react-redux": "^9.1.2"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.11.2",
-    "@cloudflare/workers-types": "^4.20240423.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
-    "eslint-plugin-next-on-pages": "^1.11.2",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
-    "vercel": "^32.3.0",
-    "wrangler": "^3.53.0"
+    "vercel": "^32.3.0"
   }
 }

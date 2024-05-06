@@ -1,8 +1,7 @@
 
 import type { NextRequest } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getPrisma } from "@/configs/prisma"
-import { Category } from '@prisma/client'
+
 export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
@@ -71,7 +70,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     const prisma = getPrisma()
-    const body: Partial<Category> = await request.json()
+    const body: any = await request.json()
     const id = body.id
     const data = await prisma.category.update({
         where: {
@@ -97,7 +96,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     const prisma = getPrisma()
-    const body: Partial<Category> = await request.json()
+    const body: any = await request.json()
     const id = body.id
     const data = await prisma.category.delete({
         where: {
