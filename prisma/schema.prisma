@@ -29,6 +29,16 @@ model Category {
   Products      Product[]
 }
 
+//demo json for category where parentid is null
+// {
+//   "name": "Electronics",
+//   "slug": "electronics",
+//   "icon": "fas fa-mobile-alt",
+//   "details": "All electronics items",
+//   "type": "parent",  
+//   "parentId": null
+// }
+
 model Product {
   id          Int        @id @default(autoincrement())
   name        String
