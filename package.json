@@ -7,13 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.6.0",
+    "@neondatabase/serverless": "^0.9.1",
     "@prisma/adapter-d1": "^5.13.0",
+    "@prisma/adapter-libsql": "^5.13.0",
+    "@prisma/adapter-neon": "^5.13.0",
     "@prisma/client": "^5.13.0",
     "@reduxjs/toolkit": "^2.2.3",
     "next": "14.1.0",

@@ -1,10 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaD1 } from '@prisma/adapter-d1'
-import { getRequestContext } from '@cloudflare/next-on-pages'
-
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
 export const getPrisma = () => {
-    const adapter = new PrismaD1(getRequestContext().env.DB)
+    const libsql = createClient({
+        url: `${process.env.TURSO_DATABASE_URL}`,
+        authToken: `${process.env.TURSO_AUTH_TOKEN}`,
+    })
+
+    const adapter = new PrismaLibSQL(libsql)
     const prisma = new PrismaClient({ adapter })
     return prisma
 
