@@ -135,20 +135,29 @@ export async function DELETE(request: NextRequest) {
 `
 
 const fetchApi = arg => `
+let baseUrl = ""
+const env = process.env.NODE_ENV
+if(env == "development"){
+    baseUrl = "https://supreme-guacamole-9jw5xgqgrqg3prx6-3000.app.github.dev"
+  }
+  else if (env == "production"){
+    baseUrl = "https://2nd-hand-bazar-cf-v2.vercel.app/"
+  }
+  
 
  export const get${capitalize(arg)} = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
     if(id){
-        const res = await fetch(\`/api/${arg}?id=\${id}\`)
+        const res = await fetch(\`\${baseUrl}/api/${arg}?id=\${id}\`)
         return res.json()
     }
     if(limit && offset){
-        const res = await fetch(\`/api/${arg}?limit=\${limit}&offset=\${offset}\`)
+        const res = await fetch(\`\${baseUrl}/api/${arg}?limit=\${limit}&offset=\${offset}\`)
         return res.json()
     }
  }
 
  export const create${capitalize(arg)} = async (data:any) => {
-    const res = await fetch(\`/api/${arg}\`, {
+    const res = await fetch(\`\${baseUrl}/api/${arg}\`, {
         method: 'POST',
         body: JSON.stringify(data)
     })
@@ -156,7 +165,7 @@ const fetchApi = arg => `
  }
 
  export const update${capitalize(arg)} = async (data:any) => {
-    const res = await fetch(\`/api/${arg}\`, {
+    const res = await fetch(\`\${baseUrl}/api/${arg}\`, {
         method: 'PUT',
         body: JSON.stringify(data)
     })
@@ -164,7 +173,7 @@ const fetchApi = arg => `
  }
 
 export const delete${capitalize(arg)} = async (id:number) => {
-    const res = await fetch(\`/api/${arg}\`, {
+    const res = await fetch(\`\${baseUrl}/api/${arg}\`, {
         method: 'DELETE',
         body: JSON.stringify({id})
     })
@@ -176,11 +185,11 @@ export const delete${capitalize(arg)} = async (id:number) => {
 
 
 args.forEach(async (arg) => {
-    const fetchPath = path.join(process.cwd(), "services", "lib" , `${arg}.ts`)
+    const fetchPath = path.join(process.cwd(), "services", "lib", `${arg}.ts`)
     fs.writeFileSync(fetchPath, fetchApi(arg), "utf-8")
-    if(!fs.existsSync(apiPath)){
+    if (!fs.existsSync(apiPath)) {
         fs.mkdirSync(apiPath)
     }
-    fs.writeFileSync(path.join(apiPath, `${arg}` , "route.ts"), nextApi(arg), "utf-8")
+    fs.writeFileSync(path.join(apiPath, `${arg}`, "route.ts"), nextApi(arg), "utf-8")
     console.log(`API ${arg} created`)
 })
