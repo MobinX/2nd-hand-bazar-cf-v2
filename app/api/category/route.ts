@@ -5,6 +5,7 @@ import { PrismaClient, Category } from '@prisma/client'
 export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
+    console.log("request")
     const prisma = getPrisma()
     const searchParams = request.nextUrl.searchParams
     const id = searchParams.get('id')
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
             take: parseInt(limit),
             skip: parseInt(offset)
         })
+        console.log("ddd",data)
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'

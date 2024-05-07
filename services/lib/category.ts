@@ -2,7 +2,8 @@
 let baseUrl = ""
 const env = process.env.NODE_ENV
 if(env == "development"){
-    baseUrl = "https://supreme-guacamole-9jw5xgqgrqg3prx6-3000.app.github.dev"
+    // baseUrl = "https://supreme-guacamole-9jw5xgqgrqg3prx6-3000.app.github.dev"
+    baseUrl = "https://3000-mobinx-2ndhandbazarcfv2-j0exmruus1i.ws-us110.gitpod.io"
   }
   else if (env == "production"){
     baseUrl = "https://2nd-hand-bazar-cf-v2.vercel.app/"
@@ -11,7 +12,8 @@ if(env == "development"){
 
  export const getCategory = async ({id,offset,limit}:{id?:number,offset?:number,limit?:number}) => { 
     if(id){
-        const res = await fetch(`${baseUrl}/api/category?id=${id}`)
+        const res = await fetch(`${baseUrl}/api/category?id=${id}`,{
+        })
 
         return res.json()
     }
