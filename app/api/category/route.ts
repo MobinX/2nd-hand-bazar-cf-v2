@@ -98,24 +98,31 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
     const prisma = getPrisma()
     const body = await request.json()
-    const id = body.id
-    const data = await prisma.category.delete({
-        where: {
-            id: id
-        }
-    })
-    if (data) {
-        return new Response(JSON.stringify(data), {
-            headers: {
-                'content-type': 'application/json'
+    const ids = body.ids
+    //delete multiple
+    if (ids) {
+        const data = await prisma.category.deleteMany({
+            where: {
+                id: {
+                    in: ids
+                }
             }
         })
-    }
-    else {
-        return new Response('Error: Unable to delete data', {
-            status: 400
-        })
+        if (data) {
+            console.log("deleted", data)
+            return new Response(JSON.stringify(data), {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+        }
+        else {
+            return new Response('Error: Unable to delete data', {
+                status: 400
+            })
 
+        }
     }
+    
 }
 

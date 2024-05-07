@@ -39,10 +39,10 @@ if(env == "development"){
     return res.json()
  }
 
-export const deleteCategory = async (id:number) => {
+export const deleteCategory = async (ids:number[]) => {
     const res = await fetch(`${baseUrl}/api/category`, {
         method: 'DELETE',
-        body: JSON.stringify({id})
+        body: JSON.stringify({ids:ids})
     })
     return res.json()
  }

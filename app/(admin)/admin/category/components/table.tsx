@@ -1,11 +1,20 @@
 "use client"
+import { deleteCategory } from "@/services/lib/category";
 import { CategoryType } from "@/types";
 import { PlusIcon } from '@heroicons/react/16/solid'
 import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { useState } from "react";
 
-export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string[] }) => {
+export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string[], }) => {
     const [srchQry, setSrchQry] = useState('')
+    const [selectedItems, setSelectedItems] = useState<number[]>([])
+    const onDelete = async (ids: number[]) => {
+        const res = await deleteCategory(ids)
+        if (res) {
+            //reload window
+            window.location.reload()
+        }
+      }
     return (
         <div className='card bg-base-100 card-bordered rounded-2xl w-full'>
             <div className='card-body p-0 pb-5'>
@@ -19,12 +28,11 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                     </div>
                     <div className='flex items-center gap-3'>
                         <button className='btn btn-sm btn-outline  btn-square'><PlusIcon className='w-5 h-5 ' /></button>
-                        <button className='btn btn-sm btn-outline  btn-square'><TrashIcon className='w-5 h-5' /></button>
+                        <div className="indicator">
+                           {selectedItems.length > 0 &&  <span className="indicator-item w-5 h-5 flex justify-center items-center text-xs text-secondary-content bg-secondary rounded-full">{selectedItems.length}</span> }
+                            <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled" } `} onClick={async ()=> await onDelete(selectedItems)}><TrashIcon className='w-5 h-5' /></button>
+                        </div>
                     </div>
-
-
-
-
                 </div>
                 <div className="overflow-x-auto mt-3">
                     <table className="table">
@@ -33,7 +41,7 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                             <tr>
                                 <th>
                                     <label>
-                                        <input type="checkbox" className="checkbox" />
+                                        <input type="checkbox" className="checkbox" checked={selectedItems.length == datas.length} onChange={e => { e.target.checked ? datas.map(d => setSelectedItems(arr => !arr.includes(d?.id ?? 0) ? arr.concat([d?.id ?? 0]) : arr)) : setSelectedItems([]) }} />
                                     </label>
                                 </th>
                                 {labels.map((label, index) => (
@@ -46,7 +54,13 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                                 <tr key={index}>
                                     <td>
                                         <label>
-                                            <input type="checkbox" className="checkbox" />
+                                            <input type="checkbox" className="checkbox" checked={selectedItems.includes(data?.id ?? 0)} onChange={e => {
+                                                if (e.target.checked) {
+                                                    setSelectedItems(arr => arr.concat([data?.id ?? 0]));
+                                                } else {
+                                                    setSelectedItems(arr => arr.filter(id => id !== (data?.id ?? 0)));
+                                                }
+                                            }} />
                                         </label>
                                     </td>
                                     <td>{data.name}</td>
