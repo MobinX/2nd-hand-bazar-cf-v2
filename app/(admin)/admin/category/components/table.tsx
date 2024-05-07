@@ -2,19 +2,40 @@
 import { deleteCategory } from "@/services/lib/category";
 import { CategoryType } from "@/types";
 import { PlusIcon } from '@heroicons/react/16/solid'
-import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { useState } from "react";
+import { ArrowLeftIcon, ArrowPathIcon, ArrowRightIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { useState, useRef, useEffect } from "react";
+import { del } from "../actions/delete";
+import { reCatch } from "../actions/reCatch";
 
 export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string[], }) => {
     const [srchQry, setSrchQry] = useState('')
     const [selectedItems, setSelectedItems] = useState<number[]>([])
-    const onDelete = async (ids: number[]) => {
-        const res = await deleteCategory(ids)
-        if (res) {
-            //reload window
-            window.location.reload()
+    const [showModal, setShowModal] = useState(false)
+    const dialogRef = useRef<HTMLDialogElement>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [isReCatching, setIsReCatching] = useState(false)
+
+
+    useEffect(() => {
+        if (dialogRef.current?.open && !showModal) {
+            dialogRef.current?.close()
+        } else if (!dialogRef.current?.open && showModal) {
+            dialogRef.current?.showModal()
         }
-      }
+    }, [showModal])
+    const onDelete = async (ids: number[]) => {
+        setIsDeleting(true)
+        const res = await del(ids)
+        if (res) {
+            setShowModal(false)
+            setIsDeleting(false)
+        }
+    }
+    const onReCatch = async () => {
+        setIsReCatching(true)
+        await reCatch()
+        setIsReCatching(false)
+    }
     return (
         <div className='card bg-base-100 card-bordered rounded-2xl w-full'>
             <div className='card-body p-0 pb-5'>
@@ -27,10 +48,25 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                         <div></div>
                     </div>
                     <div className='flex items-center gap-3'>
+                    <button className='btn btn-sm btn-outline  btn-square' onClick={async()=>await onReCatch()}>{isReCatching ? <span className="loading loading-spinner"></span> : <ArrowPathIcon className='w-5 h-5 ' /> } </button>
+
                         <button className='btn btn-sm btn-outline  btn-square'><PlusIcon className='w-5 h-5 ' /></button>
                         <div className="indicator">
-                           {selectedItems.length > 0 &&  <span className="indicator-item w-5 h-5 flex justify-center items-center text-xs text-secondary-content bg-secondary rounded-full">{selectedItems.length}</span> }
-                            <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled" } `} onClick={async ()=> await onDelete(selectedItems)}><TrashIcon className='w-5 h-5' /></button>
+                            {selectedItems.length > 0 && <span className="indicator-item w-5 h-5 flex justify-center items-center text-xs text-secondary-content bg-secondary rounded-full">{selectedItems.length}</span>}
+                            <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled"} `} onClick={() => setShowModal(true)}><TrashIcon className='w-5 h-5' /></button>
+                            <dialog ref={dialogRef} className="modal">
+                                <div className="modal-box">
+                                    <h3 className="font-bold text-lg">Alert!</h3>
+                                    <p className="py-4">Are you sure? Deleting {selectedItems.length} Item{selectedItems.length > 0 ? "s" : ""}</p>
+                                    <div className="modal-action">
+                                        
+                                            {/* if there is a button in form, it will close the modal */}
+                                            <button className="btn btn-primary" onClick={async () => await onDelete(selectedItems)}>{isDeleting && <span className="loading loading-spinner"></span>}Delete</button>
+                                            <button className="btn btn-secondary ml-2" onClick={()=>setShowModal(false)}>Close</button>
+                                        
+                                    </div>
+                                </div>
+                            </dialog>
                         </div>
                     </div>
                 </div>
@@ -41,11 +77,11 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                             <tr>
                                 <th>
                                     <label>
-                                        <input type="checkbox" className="checkbox" checked={selectedItems.length == datas.length} onChange={e => { e.target.checked ? datas.map(d => setSelectedItems(arr => !arr.includes(d?.id ?? 0) ? arr.concat([d?.id ?? 0]) : arr)) : setSelectedItems([]) }} />
+                                        <input type="checkbox" className="checkbox" checked={selectedItems.length == datas.length && selectedItems.length > 0} onChange={e => { e.target.checked ? datas.map(d => setSelectedItems(arr => !arr.includes(d?.id ?? 0) ? arr.concat([d?.id ?? 0]) : arr)) : setSelectedItems([]) }} />
                                     </label>
                                 </th>
                                 {labels.map((label, index) => (
-                                    <th key={index}>{label}</th>
+                                    <td className="text-sm" key={index}>{label}</td>
                                 ))}
                             </tr>
                         </thead>
