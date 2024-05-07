@@ -1,7 +1,7 @@
 
 import type { NextRequest } from 'next/server'
 import { getPrisma } from "@/configs/prisma"
-
+import { PrismaClient, Category } from '@prisma/client'
 export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get('id')
     const limit = searchParams.get('limit')
     const offset = searchParams.get('offset')
-    if(id){
+    if (id) {
         const data = await prisma.category.findUnique({
             where: {
                 id: parseInt(id)
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             }
         })
     }
-    if(limit && offset){
+    if (limit && offset) {
         const data = await prisma.category.findMany({
             take: parseInt(limit),
             skip: parseInt(offset)
@@ -33,44 +33,45 @@ export async function GET(request: NextRequest) {
             }
         })
     }
-    if(!limit && !offset && !id){
+    if (!limit && !offset && !id) {
         //error
         return new Response('Error: limit and offset are required if you dont need specific id or provide id for specific one', {
             status: 400
         })
     }
-    
 
-    
+
+
+
 }
 
 export async function POST(request: NextRequest) {
     const prisma = getPrisma()
-    const body: any = await request.json()
+    const body = await request.json()
     const data = await prisma.category.create({
-        data: body
+        data: body as Category
     })
-    if(data){
+    if (data) {
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
             }
         })
     }
-    else{
+    else {
         return new Response('Error: Unable to create data', {
             status: 400
         })
-    
+
     }
 
 
-    
+
 }
 
 export async function PUT(request: NextRequest) {
     const prisma = getPrisma()
-    const body: any = await request.json()
+    const body: Partial<Category> = await request.json()
     const id = body.id
     const data = await prisma.category.update({
         where: {
@@ -78,43 +79,43 @@ export async function PUT(request: NextRequest) {
         },
         data: body
     })
-    if(data){
+    if (data) {
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
             }
         })
     }
-    else{
+    else {
         return new Response('Error: Unable to update data', {
             status: 400
         })
-    
+
     }
-    
+
 }
 
 export async function DELETE(request: NextRequest) {
     const prisma = getPrisma()
-    const body: any = await request.json()
+    const body = await request.json()
     const id = body.id
     const data = await prisma.category.delete({
         where: {
             id: id
         }
     })
-    if(data){
+    if (data) {
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
             }
         })
     }
-    else{
+    else {
         return new Response('Error: Unable to delete data', {
             status: 400
         })
-    
+
     }
 }
 

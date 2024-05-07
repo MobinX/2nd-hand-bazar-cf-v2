@@ -9,15 +9,18 @@ if(env == "development"){
   }
   
 
- export const getCategory = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
+ export const getCategory = async ({id,offset,limit}:{id?:number,offset?:number,limit?:number}) => { 
     if(id){
         const res = await fetch(`${baseUrl}/api/category?id=${id}`)
+
         return res.json()
     }
-    if(limit && offset){
+    
         const res = await fetch(`${baseUrl}/api/category?limit=${limit}&offset=${offset}`)
+        console.log("res")
+
         return res.json()
-    }
+    
  }
 
  export const createCategory = async (data:any) => {

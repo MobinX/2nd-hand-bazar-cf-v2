@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
+import { Navbar } from "./components/navbar";
 export const runtime = 'edge';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} flex flex-col min-h-screen`} data-theme="dark">
+        <Navbar>
+        {children}
+        </Navbar></body>
     </html>
   );
 }
