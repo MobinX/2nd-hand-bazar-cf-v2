@@ -180,9 +180,16 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
     const prisma = getPrisma()
     const body = await request.json()
-    const ids = body.ids
+    const ids:number[] = body.ids
     //delete multiple
     if (ids) {
+        let data2 = await prisma.category.deleteMany({
+            where: {
+                parentId: {
+                    in: ids
+                }
+            }
+        })
         const data = await prisma.category.deleteMany({
             where: {
                 id: {
@@ -190,7 +197,9 @@ export async function DELETE(request: NextRequest) {
                 }
             }
         })
-        if (data) {
+        //also delete those which has parentid in ids
+        
+        if (data && data2) {
             if (body.parentId != null) {
                 let parentData = await prisma.category.update({
                     where: {

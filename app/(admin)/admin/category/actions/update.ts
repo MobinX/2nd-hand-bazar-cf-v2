@@ -1,15 +1,19 @@
 "use server"
 import { createCategory, updateCategory } from "@/services/lib/category";
+import { uploadFile } from "@/services/uploadFile";
 import { CategoryType } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function update(id:number,form: FormData) {
-    const data:CategoryType ={
-        id: id,
+    let iconUrl = await uploadFile(form.get('icon') as File)
+    
+    console.log(iconUrl)
+    let data:CategoryType ={
+        id: id, 
         name: form.get('name') as string,
         slug: form.get('slug') as string,
-        icon: form.get('icon') as string,
+        icon: iconUrl,
         details: form.get('details') as string,
         type: form.get('type') as string,
         showInHome: form.get('showInHome') === 'on',

@@ -1,14 +1,17 @@
 "use server"
 import { createCategory } from "@/services/lib/category";
+import { uploadFile } from "@/services/uploadFile";
 import { CategoryType } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function create(parentId:number|null,form: FormData) {
+    let iconUrl = await uploadFile(form.get('icon') as File)
+    console.log(iconUrl)
     let data:CategoryType ={
         name: form.get('name') as string,
         slug: form.get('slug') as string,
-        icon: form.get('icon') as string,
+        icon: iconUrl,
         details: form.get('details') as string,
         type: form.get('type') as string,
         showInHome: form.get('showInHome') === 'on',
@@ -17,8 +20,8 @@ export async function create(parentId:number|null,form: FormData) {
     }
     if(parentId) data["parentId"] = parentId;
 
-    console.log(data)
-    console.log(form)
+    // console.log(data)
+    // console.log(form)
     const res = await createCategory(data)
     if (res) {
         //reload window

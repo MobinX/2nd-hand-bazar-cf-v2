@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { del } from "../actions/delete";
 import { reCatch } from "../actions/reCatch";
 import Link from "next/link";
+import Image from "next/image";
 
 export const Table = ({ datas, labels ,parentCategory = null }: { datas: CategoryType[], labels: string[], parentCategory?: {id:number, name: string} |null}) => {
     const [srchQry, setSrchQry] = useState('')
@@ -112,7 +113,7 @@ export const Table = ({ datas, labels ,parentCategory = null }: { datas: Categor
                                     </td>
                                     <td><Link href={`/admin/category/${data.id}`}>{data.name}</Link></td>
                                     <td>{data.slug}</td>
-                                    <td>{data.icon}</td>
+                                    <td><Image src={data.icon ?? ""} height={80}  width={80} className="rounded-md" alt={data.name ?? ""}/></td>
                                     <td>{data.details}</td>
                                     <td>{data.type}</td>
                                     <td>{data.showInHome?.toString()}</td>
