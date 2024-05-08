@@ -1,12 +1,12 @@
 "use server"
 import { deleteCategory } from "@/services/lib/category";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
-export async function del(ids: number[]) {
-    const res = await deleteCategory(ids)
+export async function del(ids: number[],parentId:number|null) {
+    const res = await deleteCategory(ids,parentId)
     if (res) {
         //reload window
-        revalidatePath('/admin/category')
+        revalidateTag('category')
         return true
     }
     

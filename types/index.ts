@@ -2,7 +2,8 @@ import {Address, Cart,CartItem,Category,Education,Product,User} from "@prisma/cl
 
 export interface CategoryType extends Partial<Category> {
     products?: number[]
-    subCategories: number[]
+    subCategoryIds?: number[]
+    subCategories?: CategoryType[]
 }
 
 export interface ProductType extends Partial<Product> {

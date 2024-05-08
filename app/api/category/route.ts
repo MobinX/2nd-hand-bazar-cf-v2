@@ -11,12 +11,40 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get('id')
     const limit = searchParams.get('limit')
     const offset = searchParams.get('offset')
+    const byParentId = searchParams.get('byParentId')
+    const includeSubcategories: boolean = searchParams.get('includeSubcategories') ? true : false
     if (id) {
+        //get specific category filter by id and parentid
+        console.log("byParentId", byParentId)
+        if (parseInt(byParentId ?? "") >= 0) {
+            console.log("byParentId --", byParentId)
+            const data = await prisma.category.findUnique({
+                where: {
+                    id: parseInt(id),
+                    parentId: parseInt(byParentId ?? "")
+                },
+                include: {
+                    subCategories: includeSubcategories
+                }
+            })
+            return new Response(JSON.stringify(data), {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+
+        }
+
         const data = await prisma.category.findUnique({
             where: {
-                id: parseInt(id)
+                id: parseInt(id),
+                
+            },
+            include: {
+                subCategories: includeSubcategories
             }
         })
+        console.log("data", data)
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
@@ -24,11 +52,30 @@ export async function GET(request: NextRequest) {
         })
     }
     if (limit && offset) {
+        if (parseInt(byParentId ?? "") >= 0) {
+            //get by parent id
+            const data = await prisma.category.findMany({
+                where: {
+                    parentId: parseInt(byParentId ?? "")
+                },
+                take: parseInt(limit),
+                skip: parseInt(offset)
+            })
+            return new Response(JSON.stringify(data), {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+        }
         const data = await prisma.category.findMany({
+            where: {
+                parentId: null
+            },
+
             take: parseInt(limit),
             skip: parseInt(offset)
         })
-        console.log("ddd",data)
+        console.log("ddd", data)
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
@@ -50,22 +97,55 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     const prisma = getPrisma()
     const body = await request.json()
-    const data = await prisma.category.create({
-        data: body as Category
-    })
-    if (data) {
-        return new Response(JSON.stringify(data), {
-            headers: {
-                'content-type': 'application/json'
+    let data: Category | null = null
+    if (body.parentId) {
+        data = await prisma.category.create({
+            data: body as Category
+        })
+        let parentData = await prisma.category.update({
+            where: {
+                id: body.parentId
+            },
+            data: {
+                subCategories: {
+                    connect: {
+                        id: data.id
+                    }
+                },
             }
         })
+        if (data && parentData) {
+            return new Response(JSON.stringify(data), {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+        }
+        else {
+            return new Response('Error: Unable to create data', {
+                status: 400
+            })
+
+        }
     }
     else {
-        return new Response('Error: Unable to create data', {
-            status: 400
-        })
+        data = await prisma.category.create({ data: body as Category })
+        if (data) {
+            return new Response(JSON.stringify(data), {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+        }
+        else {
+            return new Response('Error: Unable to create data', {
+                status: 400
+            })
 
+        }
     }
+
+
 
 
 
@@ -111,6 +191,26 @@ export async function DELETE(request: NextRequest) {
             }
         })
         if (data) {
+            if (body.parentId != null) {
+                let parentData = await prisma.category.update({
+                    where: {
+                        id: body.parentId
+                    },
+                    data: {
+                        subCategories: {
+                            disconnect: {
+                                id: ids[0]
+                            }
+                        },
+                    }
+                })
+                return new Response(JSON.stringify(data), {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                })
+
+            }
             console.log("deleted", data)
             return new Response(JSON.stringify(data), {
                 headers: {
@@ -125,6 +225,6 @@ export async function DELETE(request: NextRequest) {
 
         }
     }
-    
+
 }
 

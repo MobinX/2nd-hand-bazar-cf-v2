@@ -6,8 +6,9 @@ import { ArrowLeftIcon, ArrowPathIcon, ArrowRightIcon, MagnifyingGlassIcon, Tras
 import { useState, useRef, useEffect } from "react";
 import { del } from "../actions/delete";
 import { reCatch } from "../actions/reCatch";
+import Link from "next/link";
 
-export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string[], }) => {
+export const Table = ({ datas, labels ,parentCategory = null }: { datas: CategoryType[], labels: string[], parentCategory?: {id:number, name: string} |null}) => {
     const [srchQry, setSrchQry] = useState('')
     const [selectedItems, setSelectedItems] = useState<number[]>([])
     const [showModal, setShowModal] = useState(false)
@@ -23,9 +24,19 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
             dialogRef.current?.showModal()
         }
     }, [showModal])
+    useEffect(() => {
+        setSelectedItems([])
+}, [datas])
     const onDelete = async (ids: number[]) => {
         setIsDeleting(true)
-        const res = await del(ids)
+        let res = null
+        if(parentCategory){
+             res = await del(ids,parentCategory.id)
+        }
+        else{
+            res = await del(ids,null)
+        }
+        
         if (res) {
             setShowModal(false)
             setIsDeleting(false)
@@ -48,9 +59,9 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                         <div></div>
                     </div>
                     <div className='flex items-center gap-3'>
-                    <button className='btn btn-sm btn-outline  btn-square' onClick={async()=>await onReCatch()}>{isReCatching ? <span className="loading loading-spinner"></span> : <ArrowPathIcon className='w-5 h-5 ' /> } </button>
+                        <button className='btn btn-sm btn-outline  btn-square' onClick={async () => await onReCatch()}>{isReCatching ? <span className="loading loading-spinner"></span> : <ArrowPathIcon className='w-5 h-5 ' />} </button>
 
-                        <button className='btn btn-sm btn-outline  btn-square'><PlusIcon className='w-5 h-5 ' /></button>
+                        <Link href={parentCategory ? `new?parentId=${parentCategory.id}&parentName=${parentCategory.name}` : "category/new"}><button className='btn btn-sm btn-outline  btn-square'><PlusIcon className='w-5 h-5 ' /></button></Link>
                         <div className="indicator">
                             {selectedItems.length > 0 && <span className="indicator-item w-5 h-5 flex justify-center items-center text-xs text-secondary-content bg-secondary rounded-full">{selectedItems.length}</span>}
                             <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled"} `} onClick={() => setShowModal(true)}><TrashIcon className='w-5 h-5' /></button>
@@ -59,11 +70,11 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                                     <h3 className="font-bold text-lg">Alert!</h3>
                                     <p className="py-4">Are you sure? Deleting {selectedItems.length} Item{selectedItems.length > 0 ? "s" : ""}</p>
                                     <div className="modal-action">
-                                        
-                                            {/* if there is a button in form, it will close the modal */}
-                                            <button className="btn btn-primary" onClick={async () => await onDelete(selectedItems)}>{isDeleting && <span className="loading loading-spinner"></span>}Delete</button>
-                                            <button className="btn btn-secondary ml-2" onClick={()=>setShowModal(false)}>Close</button>
-                                        
+
+                                        {/* if there is a button in form, it will close the modal */}
+                                        <button className="btn btn-primary" onClick={async () => await onDelete(selectedItems)}>{isDeleting && <span className="loading loading-spinner"></span>}Delete</button>
+                                        <button className="btn btn-secondary ml-2" onClick={() => setShowModal(false)}>Close</button>
+
                                     </div>
                                 </div>
                             </dialog>
@@ -99,7 +110,7 @@ export const Table = ({ datas, labels }: { datas: CategoryType[], labels: string
                                             }} />
                                         </label>
                                     </td>
-                                    <td>{data.name}</td>
+                                    <td><Link href={`/admin/category/${data.id}`}>{data.name}</Link></td>
                                     <td>{data.slug}</td>
                                     <td>{data.icon}</td>
                                     <td>{data.details}</td>

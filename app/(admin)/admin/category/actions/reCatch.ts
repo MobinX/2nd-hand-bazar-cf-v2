@@ -1,9 +1,9 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export async function reCatch() {
     console.log('reCatch')
-    revalidatePath('/admin/category')
+    revalidateTag('category')
     return true
 }

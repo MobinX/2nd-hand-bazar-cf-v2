@@ -2,7 +2,7 @@ import { getCategory } from '@/services/lib/category'
 import { CategoryType } from '@/types'
 import React from 'react'
 import { Table } from './components/table'
-export const dynamic = 'force-dynamic'
+// export const dynamic = 'force-dynamic'
 
 export default async function Category() {
 
