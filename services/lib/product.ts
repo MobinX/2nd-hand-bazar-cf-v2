@@ -10,15 +10,18 @@ if(env == "development"){
   }
   
 
- export const getProduct = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
+ export const getProduct = async ({id,offset,limit}:{id?:number,offset?:number,limit?:number}) => { 
+    console.log("product")
     if(id){
-        const res = await fetch(`${baseUrl}/api/product?id=${id}`)
+        const res = await fetch(`${baseUrl}/api/product?id=${id}`,{next:{tags:["product"]}})
         return res.json()
     }
-    if(limit && offset){
-        const res = await fetch(`${baseUrl}/api/product?limit=${limit}&offset=${offset}`)
+
+       
+        const res = await fetch(`${baseUrl}/api/product?limit=${limit}&offset=${offset}`,{next:{tags:["product"]}})
+        console.log(res.status)
         return res.json()
-    }
+    
  }
 
  export const createProduct = async (data:any) => {
@@ -37,10 +40,10 @@ if(env == "development"){
     return res.json()
  }
 
-export const deleteProduct = async (id:number) => {
+export const deleteProduct = async (ids:number[]) => {
     const res = await fetch(`${baseUrl}/api/product`, {
         method: 'DELETE',
-        body: JSON.stringify({id})
+        body: JSON.stringify({ids:ids})
     })
     return res.json()
  }

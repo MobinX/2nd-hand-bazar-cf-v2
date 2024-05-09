@@ -22,21 +22,22 @@ export async function GET(request: NextRequest) {
                 }
             })
         }
-        if (limit && offset) {
+            
             const data = await prisma.user.findMany({
-                take: parseInt(limit),
-                skip: parseInt(offset)
+                take: parseInt(limit ?? ""),
+                skip: parseInt(offset ?? "")
             })
             return new Response(JSON.stringify(data), {
                 headers: {
                     'content-type': 'application/json'
                 }
-            })
-        }
+    })
+        
         if (!limit && !offset && !id) {
             throw new Error('Error: limit and offset are required if you dont need specific id or provide id for specific one')
         }
     } catch (error:any) {
+        console.log(error)
         return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
             headers: {
@@ -53,12 +54,14 @@ export async function POST(request: NextRequest) {
         const data = await prisma.user.create({
             data: body
         })
+        console.log(data)
         return new Response(JSON.stringify(data), {
             headers: {
                 'content-type': 'application/json'
             }
         })
     } catch (error) {
+        console.log(error)
         return new Response(JSON.stringify({ error: 'Unable to create data' }), {
             status: 500,
             headers: {
@@ -95,13 +98,17 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+    console.log("deleting..")
     try {
         const prisma = getPrisma()
         const body: any = await request.json()
-        const id = body.id
-        const data = await prisma.user.delete({
+        const ids = body.ids
+        
+        const data = await prisma.user.deleteMany({
             where: {
-                id: id
+                id: {
+                    in: ids
+                }
             }
         })
         return new Response(JSON.stringify(data), {
@@ -110,6 +117,7 @@ export async function DELETE(request: NextRequest) {
             }
         })
     } catch (error) {
+        console.log(error)
         return new Response(JSON.stringify({ error: 'Unable to delete data' }), {
             status: 500,
             headers: {

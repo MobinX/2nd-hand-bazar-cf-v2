@@ -10,15 +10,15 @@ if(env == "development"){
   }
   
 
- export const getUser = async ({id,offset,limit}:{id:number,offset:number,limit:number}) => { 
+ export const getUser = async ({id,offset,limit}:{id?:number,offset?:number,limit?:number}) => { 
     if(id){
-        const res = await fetch(`${baseUrl}/api/user?id=${id}`)
+        const res = await fetch(`${baseUrl}/api/user?id=${id}`,{next:{tags:["user"]}})
         return res.json()
     }
-    if(limit && offset){
+    
         const res = await fetch(`${baseUrl}/api/user?limit=${limit}&offset=${offset}`)
         return res.json()
-    }
+    
  }
 
  export const createUser = async (data:any) => {
@@ -37,10 +37,10 @@ if(env == "development"){
     return res.json()
  }
 
-export const deleteUser = async (id:number) => {
+export const deleteUser = async (ids:number[]) => {
     const res = await fetch(`${baseUrl}/api/user`, {
         method: 'DELETE',
-        body: JSON.stringify({id})
+        body: JSON.stringify({ids:ids})
     })
     return res.json()
  }

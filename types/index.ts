@@ -8,6 +8,8 @@ export interface CategoryType extends Partial<Category> {
 
 export interface ProductType extends Partial<Product> {
     category?: number[]
+    categories?: CategoryType[]
+    uploader?: UserType
 }
 
 
