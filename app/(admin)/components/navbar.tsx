@@ -14,8 +14,8 @@ export function Navbar({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className='flex flex-col space-y-5 justify-center items-center h-full w-full'>
                         <Link href={'/admin/category'}> <button className='btn btn-ghost'>Category</button> </Link>
-                        <Link href={'/admin/users'}> <button className='btn btn-ghost'>Users</button> </Link>
-                        <Link href={'/admin/products'}> <button className='btn btn-ghost'>Products</button> </Link>
+                        <Link href={'/admin/user'}> <button className='btn btn-ghost'>Users</button> </Link>
+                        <Link href={'/admin/product'}> <button className='btn btn-ghost'>Products</button> </Link>
                         <Link href={'/admin/pages'}> <button className='btn btn-ghost'>Pages</button> </Link>
                     </div>
                 </div>
