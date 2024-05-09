@@ -5,12 +5,12 @@ import { CategoryType } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function update(id:number,form: FormData) {
+export async function update(prevSate:any,form: FormData) {
     let iconUrl = await uploadFile(form.get('icon') as File)
-    
+    console.log("pr", parseInt(form.get("parentId") as string))
     console.log(iconUrl)
     let data:CategoryType ={
-        id: id, 
+        id: parseInt(form.get("id") as string), 
         name: form.get('name') as string,
         slug: form.get('slug') as string,
         icon: iconUrl,
@@ -27,8 +27,12 @@ export async function update(id:number,form: FormData) {
         //reload window
         revalidateTag('category')
         redirect('/admin/category')
-        return true
+        return {
+            msg:"done"
+        }
     }
     
-    return false
+    return {
+        msg:"Some thing went wrong"
+    }
   }

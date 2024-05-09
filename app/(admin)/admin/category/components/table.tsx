@@ -65,11 +65,11 @@ export const Table = ({ datas, labels ,parentCategory = null }: { datas: Categor
                         <Link href={parentCategory ? `new?parentId=${parentCategory.id}&parentName=${parentCategory.name}` : "category/new"}><button className='btn btn-sm btn-outline  btn-square'><PlusIcon className='w-5 h-5 ' /></button></Link>
                         <div className="indicator">
                             {selectedItems.length > 0 && <span className="indicator-item w-5 h-5 flex justify-center items-center text-xs text-secondary-content bg-secondary rounded-full">{selectedItems.length}</span>}
-                            <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled"} `} onClick={() => setShowModal(true)}><TrashIcon className='w-5 h-5' /></button>
+                            <button className={`btn btn-sm btn-outline  btn-square ${selectedItems.length > 0 ? "active" : "disabled"} `} disabled={selectedItems.length == 0} onClick={() => setShowModal(true)}><TrashIcon className='w-5 h-5' /></button>
                             <dialog ref={dialogRef} className="modal">
                                 <div className="modal-box">
                                     <h3 className="font-bold text-lg">Alert!</h3>
-                                    <p className="py-4">Are you sure? Deleting {selectedItems.length} Item{selectedItems.length > 0 ? "s" : ""}</p>
+                                    <p className="py-4">Are you sure? Deleting {selectedItems.length} Item{selectedItems.length > 1 ? "s" : ""}</p>
                                     <div className="modal-action">
 
                                         {/* if there is a button in form, it will close the modal */}

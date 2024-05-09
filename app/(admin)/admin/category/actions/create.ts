@@ -5,8 +5,9 @@ import { CategoryType } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function create(parentId:number|null,form: FormData) {
+export async function create(prevState:any ,form: FormData) {
     let iconUrl = await uploadFile(form.get('icon') as File)
+    let parentId = parseInt(form.get("parentId") as string);
     console.log(iconUrl)
     let data:CategoryType ={
         name: form.get('name') as string,
@@ -18,7 +19,7 @@ export async function create(parentId:number|null,form: FormData) {
         HomePageTitle: form.get('homePageTitle') as string,
     
     }
-    if(parentId) data["parentId"] = parentId;
+    if(parentId >= 0) data["parentId"] = parentId;
 
     // console.log(data)
     // console.log(form)
@@ -28,8 +29,12 @@ export async function create(parentId:number|null,form: FormData) {
         revalidateTag('category')
 
         redirect('/admin/category')
-        return true
+        return {
+            msg:"done"
+        }
     }
     
-    return false
+    return {
+        msg:"Some thing went wrong"
+    }
   }

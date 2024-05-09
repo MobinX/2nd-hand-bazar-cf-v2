@@ -17,6 +17,8 @@
     "@prisma/adapter-libsql": "^5.13.0",
     "@prisma/adapter-neon": "^5.13.0",
     "@prisma/client": "^5.13.0",
+    "cloudinary": "^2.2.0",
+    "http": "^0.0.1-security",
     "next": "14.1.0",
     "prisma": "^5.13.0",
     "react": "^18",
