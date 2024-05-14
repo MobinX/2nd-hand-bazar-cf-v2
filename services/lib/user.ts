@@ -22,7 +22,11 @@ if(env == "development"){
         return res.json()
     }
     
-        const res = await fetch(`${baseUrl}/api/user?limit=${limit}&offset=${offset}`)
+        const res = await fetch(`${baseUrl}/api/user?limit=${limit}&offset=${offset}`,{headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },  
+        // credentials: 'include', 
+        next:{tags:["user"]}})
         return res.json()
     
  }

@@ -19,7 +19,7 @@ export async function update(prevSate: any, form: FormData) {
             id: parseInt(form.get("id") as string),
             name: form.get('name') as string,
             slug: form.get('slug') as string,
-            // icon: iconUrl,
+            icon: iconUrl,
             details: form.get('details') as string,
             type: form.get('type') as string,
             showInHome: form.get('showInHome') === 'on',

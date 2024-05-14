@@ -1,13 +1,8 @@
-/*
-parent category map
-{"2":198,"10":203,"11":197,"12":196,"13":195,"14":201,"25":200,"33":202,"37":199}*/
 
 /*
 sub category id
-{"4":129,"5":135,"6":126,"7":123,"8":134,"9":128,"17":137,"18":138,"19":140,"20":136,"21":139,"22":130,"23":133,"34":124,"35":132,"36":131,"38":125,"39":127}
-
+{"4":412,"5":405,"6":413,"7":402,"8":404,"9":417,"17":403,"18":414,"19":408,"20":419,"21":406,"22":409,"23":407,"34":416,"35":411,"36":410,"38":418,"39":415}
 */
-
 const fetch = require('node-fetch');
 
 const fs = require('fs');
@@ -29,49 +24,119 @@ if (env == "development") {
 else if (env == "production") {
     baseUrl = "https://2nd-hand-bazar-cf-v2.verced.app/"
 }
- const createCategory = async (data) => {
-    const res = await fetch(`https://3000-monospace-2nd-hand-bazar-cf-v2-1715695903326.cluster-mwrgkbggpvbq6tvtviraw2knqg.cloudworkstations.dev/api/category`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        }, 
-        method: 'POST',
-        body: JSON.stringify(data)
+const upCategory = () => {
+    const createCategory = async (data) => {
+        const res = await fetch(`https://3000-monospace-2nd-hand-bazar-cf-v2-1715695903326.cluster-mwrgkbggpvbq6tvtviraw2knqg.cloudworkstations.dev/api/category`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+        return res.json()
+    }
+
+    const category = tables.filter(table => table.name === 'categories')
+    const iconstable = tables.filter(table => table.name === 'uploads')
+
+    // console.log(category[0].data)
+    let l = category[0].data.filter(data => (parseInt(data.parent_id) === 0))
+    let l1 = category[0].data.filter(data => !(parseInt(data.parent_id) === 0))
+
+    let icons = iconstable[0].data
+    // console.log(icons)
+    let parentCategoryMap = JSON.parse('{"2":198,"10":203,"11":197,"12":196,"13":195,"14":201,"25":200,"33":202,"37":199}')
+    // console.log(parentCategoryMap[2])
+    let ids1 = {}
+    let ids2 = {}
+
+    l.map(async (d, i) => {
+        // let iconurl = "https://2ndhandbajar.com/public/" + icons.find(icon => icon.id === d.icon).file_name
+        // console.log(iconurl)
+        let data = {
+            prevId: parseInt(d.id),
+            name: d.name,
+            slug: d.slug,
+            details: d.meta_description,
+            type: "parent",
+            showInHome: true,
+            HomePageTitle: d.meta_title,
+            // parentId: parentCategoryMap[parseInt(d.parent_id)]
+        };
+        // console.log(data)
+        let res = await createCategory(data)
+        // console.log(res)
+        ids1[d.id.toString()] = res.id
+
+        console.log(JSON.stringify(ids1))
     })
-    return res.json()
+    console.log("l done")
+
+    setTimeout(() => {
+        l1.map(async (d, i) => {
+            // let iconurl = "https://2ndhandbajar.com/public/" + icons.find(icon => icon.id === d.icon).file_name
+            // console.log(iconurl)
+            let data = {
+                prevId: parseInt(d.id),
+                name: d.name,
+                slug: d.slug,
+                details: d.meta_description,
+                type: "parent",
+                showInHome: true,
+                HomePageTitle: d.meta_title,
+                parentId: ids1[parseInt(d.parent_id)]
+            };
+            // console.log(data)
+            let res = await createCategory(data)
+            // console.log(res)
+            ids2[d.id.toString()] = res.id
+
+            console.log(JSON.stringify(ids2))
+        })
+    }, 6000);
+
 }
 
-const category = tables.filter(table => table.name === 'categories')
-const iconstable = tables.filter(table => table.name === 'uploads')
+const upProducts = () =>{
 
-// console.log(category[0].data)
-let l = category[0].data.filter(data => !(parseInt(data.parent_id) === 0))
-let icons = iconstable[0].data
-// console.log(icons)
-let parentCategoryMap = JSON.parse('{"2":198,"10":203,"11":197,"12":196,"13":195,"14":201,"25":200,"33":202,"37":199}')
-// console.log(parentCategoryMap[2])
-let ids= {}
-l.map(async (d,i)=>{
-    // let iconurl = "https://2ndhandbajar.com/public/" + icons.find(icon => icon.id === d.icon).file_name
-    // console.log(iconurl)
-    let data = {
-        prevId:parseInt(d.id),
-        name: d.name,
-        slug: d.slug,
-        details: d.meta_description,
-        type: "parent",
-        showInHome: true,
-        HomePageTitle:d.meta_title,
-        parentId: parentCategoryMap[parseInt(d.parent_id)]
-    };
-    // console.log(data)
-    let res = await createCategory(data)
-    console.log(res)
-    ids[d.id.toString()] = res.id
-    
-    console.log(JSON.stringify(ids))
+
+}
+
+const uploadFile =async (file) => {
+    const cloudName = "virsys";
+    const unsignedUploadPreset = '2ndhandbazar';
+
+    const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+    const fd = new FormData();
+    fd.append('upload_preset', "2ndhandbazar");
+    // fd.append('tags', 'browser_upload'); // Optional - add tags for image admin in Cloudinary
+    fd.append('file', file);
+    console.log(fd)
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: {
+                upload_preset: unsignedUploadPreset,
+                file: File
+            }
+        });
+        const data = await response.json();
+        // File uploaded successfully
+        // const url = data.secure_url;
+        // Create a thumbnail of the uploaded image, with 150px width
+        // const tokens = url.split('/');
+        // tokens.splice(-3, 0, 'w_150,c_scale');
+        // const img = new Image();
+        // img.src = tokens.join('/');
+        // img.alt = data.public_id;
+        console.log(data)
+        return data.secure_url;
+    } catch (error) {
+        console.error('Error uploading the file:', error);
+    }
+}
+
+uploadFile("https://2ndhandbajar.com/public/uploads/all/rxHBRkA5FimeN9ze4HqEP3wAp9Xtx7axw1PUBJmI.png").then((url) => {
+    console.log(url)
 })
-
-
-
-
-// console.log(l)

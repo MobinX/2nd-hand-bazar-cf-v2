@@ -16,7 +16,7 @@ export const Table = ({ datas, labels ,parentCategory = null }: { datas: Categor
     const dialogRef = useRef<HTMLDialogElement>(null)
     const [isDeleting, setIsDeleting] = useState(false)
     const [isReCatching, setIsReCatching] = useState(false)
-    console.log(datas)
+    // console.log(datas)
 
     useEffect(() => {
         if (dialogRef.current?.open && !showModal) {
