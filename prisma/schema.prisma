@@ -16,6 +16,8 @@ model Category {
   icon          String?
   details       String?
   type          String
+  prevId        Int?
+  title         String?
   createdAt     DateTime   @default(now())
   parentId      Int?
   showInHome    Boolean    @default(false)
@@ -27,6 +29,7 @@ model Category {
 
 model Product {
   id          Int        @id @default(autoincrement())
+
   name        String
   slug        String
   price       Float

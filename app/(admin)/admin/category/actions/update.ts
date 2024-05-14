@@ -19,28 +19,29 @@ export async function update(prevSate: any, form: FormData) {
             id: parseInt(form.get("id") as string),
             name: form.get('name') as string,
             slug: form.get('slug') as string,
-            icon: iconUrl,
+            // icon: iconUrl,
             details: form.get('details') as string,
             type: form.get('type') as string,
             showInHome: form.get('showInHome') === 'on',
             HomePageTitle: form.get('homePageTitle') as string,
         };
-        if(iconUrl){
+        if (iconUrl) {
 
-        console.log(form.get("icon"))
-        let dle:Partial<DeletedFiles> = {
-            name: form.get("prevIcon") as string
+            console.log(form.get("icon"))
+            let dle: Partial<DeletedFiles> = {
+                name: form.get("prevIcon") as string
+            }
+            console.log(JSON.stringify(dle))
+            // const dlres = await addInDeletedFiles(JSON.stringify(dle))
         }
-        console.log(JSON.stringify(dle))
-        const dlres = await addInDeletedFiles(JSON.stringify(dle))
-     } //adding in deleted files list so then we delete them from cloudinary
+        //adding in deleted files list so then we delete them from cloudinary
         const res = await updateCategory(data);
         if (res) {
             //reload window
             revalidateTag('category');
-            
+
             return {
-                type:"success",
+                type: "success",
                 msg: "done"
             };
         }
@@ -48,14 +49,14 @@ export async function update(prevSate: any, form: FormData) {
         hasError = true
         console.error(error);
         return {
-            type:"error",
+            type: "error",
             msg: "Something went wrong"
         };
     }
-    finally{
+    finally {
 
-        if(!hasError) redirect('/admin/category');
-     }
+        if (!hasError) redirect('/admin/category');
+    }
 
 
 }

@@ -51,6 +51,9 @@ export const createCategory = async (data: any) => {
 
 export const updateCategory = async (data: any) => {
     const res = await fetch(`${baseUrl}/api/category`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'PUT',
         body: JSON.stringify(data)
     })
@@ -59,6 +62,9 @@ export const updateCategory = async (data: any) => {
 
 export const deleteCategory = async (ids: number[], parentId: number | null = null) => {
     const res = await fetch(`${baseUrl}/api/category`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'DELETE',
         body: JSON.stringify({ ids: ids, parentId: parentId })
     })

@@ -129,6 +129,7 @@ export async function POST(request: NextRequest) {
                 })
             }
             else {
+
                 return new Response(JSON.stringify({ error: 'Error: Unable to create data' }), {
                     status: 400,
                     headers: {
@@ -158,6 +159,7 @@ export async function POST(request: NextRequest) {
             }
         }
     } catch (error) {
+        console.log(error)
         return new Response(JSON.stringify({ error: 'Something went wrong' }), {
             status: 500,
             headers: {
