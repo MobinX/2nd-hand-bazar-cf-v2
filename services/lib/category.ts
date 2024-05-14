@@ -14,7 +14,11 @@ else if (env == "production") {
 
 export const getCategory = async ({ id, offset, limit, includeSubcategories = false, byParentId = null }: { id?: number, offset?: number, limit?: number, includeSubcategories?: boolean, byParentId?: number | null }) => {
     if (id) {
-        const res = await fetch(`${baseUrl}/api/category?id=${id}&includeSubcategories=${includeSubcategories}&byParentId=${byParentId}`, { next: { tags: ['category'] } })
+        const res = await fetch(`${baseUrl}/api/category?id=${id}&includeSubcategories=${includeSubcategories}&byParentId=${byParentId}`, { headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },  
+        // credentials: 'include', 
+        next: { tags: ['category'] } })
         console.log("res", await res.text())
         return res.text()
     }
