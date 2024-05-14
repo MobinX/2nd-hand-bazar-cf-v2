@@ -36,6 +36,9 @@ if(env == "development"){
 
  export const createProduct = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/product`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'POST',
         body: JSON.stringify(data)
     })
@@ -44,6 +47,9 @@ if(env == "development"){
 
  export const updateProduct = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/product`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'PUT',
         body: JSON.stringify(data)
     })
@@ -52,6 +58,9 @@ if(env == "development"){
 
 export const deleteProduct = async (ids:number[]) => {
     const res = await fetch(`${baseUrl}/api/product`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'DELETE',
         body: JSON.stringify({ids:ids})
     })

@@ -19,8 +19,7 @@ export const getCategory = async ({ id, offset, limit, includeSubcategories = fa
         },  
         // credentials: 'include', 
         next: { tags: ['category'] } })
-        console.log("res", await res.text())
-        return res.text()
+        return res.json()
     }
 
     const res = await fetch(`${baseUrl}/api/category?limit=${limit}&offset=${offset}&includeSubcategories=${includeSubcategories}&byParentId=${byParentId}`, {
@@ -34,13 +33,16 @@ export const getCategory = async ({ id, offset, limit, includeSubcategories = fa
     })
     console.log("res")
     // console.log("res",await res.text())
-    let l = await res.text()
-    return l
+    
+    return res.json()
 
 }
 
 export const createCategory = async (data: any) => {
     const res = await fetch(`${baseUrl}/api/category`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'POST',
         body: JSON.stringify(data)
     })

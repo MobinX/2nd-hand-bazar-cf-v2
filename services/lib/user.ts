@@ -29,6 +29,9 @@ if(env == "development"){
 
  export const createUser = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/user`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'POST',
         body: JSON.stringify(data)
     })
@@ -37,6 +40,9 @@ if(env == "development"){
 
  export const updateUser = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/user`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'PUT',
         body: JSON.stringify(data)
     })
@@ -45,6 +51,9 @@ if(env == "development"){
 
 export const deleteUser = async (ids:number[]) => {
     const res = await fetch(`${baseUrl}/api/user`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'DELETE',
         body: JSON.stringify({ids:ids})
     })

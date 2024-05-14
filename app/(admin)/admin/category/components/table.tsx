@@ -16,7 +16,7 @@ export const Table = ({ datas, labels ,parentCategory = null }: { datas: Categor
     const dialogRef = useRef<HTMLDialogElement>(null)
     const [isDeleting, setIsDeleting] = useState(false)
     const [isReCatching, setIsReCatching] = useState(false)
-
+    console.log(datas)
 
     useEffect(() => {
         if (dialogRef.current?.open && !showModal) {
@@ -27,6 +27,7 @@ export const Table = ({ datas, labels ,parentCategory = null }: { datas: Categor
     }, [showModal])
     useEffect(() => {
         setSelectedItems([])
+        console.log(datas)
 }, [datas])
     const onDelete = async (ids: number[]) => {
         setIsDeleting(true)

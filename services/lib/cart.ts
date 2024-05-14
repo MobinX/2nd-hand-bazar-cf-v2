@@ -24,6 +24,9 @@ if(env == "development"){
 
  export const createCart = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/cart`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'POST',
         body: JSON.stringify(data)
     })
@@ -32,6 +35,9 @@ if(env == "development"){
 
  export const updateCart = async (data:any) => {
     const res = await fetch(`${baseUrl}/api/cart`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'PUT',
         body: JSON.stringify(data)
     })
@@ -40,6 +46,9 @@ if(env == "development"){
 
 export const deleteCart = async (id:number) => {
     const res = await fetch(`${baseUrl}/api/cart`, {
+         headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }, 
         method: 'DELETE',
         body: JSON.stringify({id})
     })
