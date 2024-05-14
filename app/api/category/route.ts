@@ -195,6 +195,7 @@ export async function PUT(request: NextRequest) {
 
         }
     } catch (error) {
+        console.log(error)
         return new Response(JSON.stringify({ error: 'Something went wrong' }), {
             status: 500,
             headers: {
