@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json()
         let data: Category | null = null
         if (body.parentId) {
+            console.log("subcategory creating ..........")
             data = await prisma.category.create({
                 data: body as Category
             })
@@ -119,6 +120,9 @@ export async function POST(request: NextRequest) {
                             id: data.id
                         }
                     },
+                },
+                include: {
+                    subCategories: true
                 }
             })
             if (data && parentData) {

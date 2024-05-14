@@ -25,6 +25,8 @@ model Category {
   parent        Category?  @relation("SubCategory", fields: [parentId], references: [id])
   subCategories Category[] @relation("SubCategory")
   products      Product[]  @relation("CategoryToProduct")
+  banner        Banner?    @relation(fields: [bannerId], references: [id])
+  bannerId      Int?        @unique
 }
 
 model Product {
@@ -113,4 +115,6 @@ model Banner {
   name      String
   image     String
   createdAt DateTime @default(now())
+  category  Category?
+  categoryId Int
 }

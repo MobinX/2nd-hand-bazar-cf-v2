@@ -1,3 +1,15 @@
+/*
+parent category map
+{"2":198,"10":203,"11":197,"12":196,"13":195,"14":201,"25":200,"33":202,"37":199}*/
+
+/*
+sub category id
+{"4":129,"5":135,"6":126,"7":123,"8":134,"9":128,"17":137,"18":138,"19":140,"20":136,"21":139,"22":130,"23":133,"34":124,"35":132,"36":131,"38":125,"39":127}
+
+*/
+
+const fetch = require('node-fetch');
+
 const fs = require('fs');
 const path = require('path');
 
@@ -15,10 +27,10 @@ if (env == "development") {
     baseUrl = "https://3000-monospace-2nd-hand-bazar-cf-v2-1715695903326.cluster-mwrgkbggpvbq6tvtviraw2knqg.cloudworkstations.dev"
 }
 else if (env == "production") {
-    baseUrl = "https://2nd-hand-bazar-cf-v2.vercel[0].app/"
+    baseUrl = "https://2nd-hand-bazar-cf-v2.verced.app/"
 }
  const createCategory = async (data) => {
-    const res = await fetch(`${baseUrl}/api/category`, {
+    const res = await fetch(`https://3000-monospace-2nd-hand-bazar-cf-v2-1715695903326.cluster-mwrgkbggpvbq6tvtviraw2knqg.cloudworkstations.dev/api/category`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
         }, 
@@ -29,22 +41,37 @@ else if (env == "production") {
 }
 
 const category = tables.filter(table => table.name === 'categories')
+const iconstable = tables.filter(table => table.name === 'uploads')
+
 // console.log(category[0].data)
-let l = category[0].data.filter(data => parseInt(data.parent_id) === 0)
-// let label2 = category[0].data.filter(data => data.parent_id === 2)
-// let label3 = category[0].data.filter(data => data.parent_id === 3)
-// let label4 = category[0].data.filter(data => data.parent_id === 4)
-
-let data = {
+let l = category[0].data.filter(data => !(parseInt(data.parent_id) === 0))
+let icons = iconstable[0].data
+// console.log(icons)
+let parentCategoryMap = JSON.parse('{"2":198,"10":203,"11":197,"12":196,"13":195,"14":201,"25":200,"33":202,"37":199}')
+// console.log(parentCategoryMap[2])
+let ids= {}
+l.map(async (d,i)=>{
+    // let iconurl = "https://2ndhandbajar.com/public/" + icons.find(icon => icon.id === d.icon).file_name
+    // console.log(iconurl)
+    let data = {
+        prevId:parseInt(d.id),
+        name: d.name,
+        slug: d.slug,
+        details: d.meta_description,
+        type: "parent",
+        showInHome: true,
+        HomePageTitle:d.meta_title,
+        parentId: parentCategoryMap[parseInt(d.parent_id)]
+    };
+    // console.log(data)
+    let res = await createCategory(data)
+    console.log(res)
+    ids[d.id.toString()] = res.id
     
-    name: l[0].name,
-    slug: l[0].slug,
-    details: l[0].meta_description,
-    icon: l[0].icon,
-    type: "parent",
-    showInHome: true,
-    HomePageTitle:l[0].title,
-};
-console.log(data)
+    console.log(JSON.stringify(ids))
+})
 
-console.log(l)
+
+
+
+// console.log(l)
