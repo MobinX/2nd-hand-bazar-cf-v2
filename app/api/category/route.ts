@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { getPrisma } from "@/configs/prisma"
 import { PrismaClient, Category } from '@prisma/client'
+import { creatUpload } from '../uploaded_file/route'
 
 export const runtime = 'edge'
 
@@ -105,6 +106,16 @@ export async function POST(request: NextRequest) {
         const prisma = getPrisma()
         const body = await request.json()
         let data: Category | null = null
+        if(body.icon){
+            let reslt = await creatUpload(body.icon)
+            if(reslt){
+                console.log("uploaded")
+                
+            }
+            else{
+                console.log("not uploaded")
+            }
+        }
         if (body.parentId) {
             console.log("subcategory creating ..........")
             data = await prisma.category.create({

@@ -118,3 +118,9 @@ model Banner {
   category  Category?
   categoryId Int
 }
+model UploadedFiles {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  deleted    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
