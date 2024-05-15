@@ -5,6 +5,9 @@ sub category id
 */
 const fetch = require('node-fetch');
 
+//import axios
+const axios = require('axios');
+
 const fs = require('fs');
 const path = require('path');
 
@@ -101,27 +104,28 @@ const upProducts = () =>{
 
 
 }
-
 const uploadFile =async (file) => {
     const cloudName = "virsys";
     const unsignedUploadPreset = '2ndhandbazar';
 
-    const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+    const url = `https://api.cloudinary.com/v1_1/${cloudName}//upload`;
     const fd = new FormData();
-    fd.append('upload_preset', "2ndhandbazar");
+    fd.append('upload_preset', unsignedUploadPreset);
     // fd.append('tags', 'browser_upload'); // Optional - add tags for image admin in Cloudinary
     fd.append('file', file);
-    console.log(fd)
 
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: {
-                upload_preset: unsignedUploadPreset,
-                file: File
-            }
+        // const response = await fetch(url, {
+        //     method: 'POST',
+        //     body: fd,
+        // });
+        const response = await axios.post(url, fd, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
         });
-        const data = await response.json();
+        const data = await response.data;
+        console.log(response)
         // File uploaded successfully
         // const url = data.secure_url;
         // Create a thumbnail of the uploaded image, with 150px width
@@ -130,9 +134,9 @@ const uploadFile =async (file) => {
         // const img = new Image();
         // img.src = tokens.join('/');
         // img.alt = data.public_id;
-        console.log(data)
         return data.secure_url;
     } catch (error) {
+        console.log(error)
         console.error('Error uploading the file:', error);
     }
 }
