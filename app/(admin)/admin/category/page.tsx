@@ -7,7 +7,7 @@ import { Table } from './components/table'
 export default async function Category() {
 
   const catagoryLabels = ["Name", "Slug", "Icon", "Details", "Type", "Show In Home", "Home Page Title"]
-  const catagoryData: CategoryType[] = await getCategory({ offset: 0, limit: 10 })
+  const catagoryData: CategoryType[] = await getCategory({ offset: 0, limit: 1000000 })
 
   console.log(catagoryData)
   return (
